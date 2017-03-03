@@ -1,0 +1,12 @@
+language: python
+python:
+  - "2.7"
+  - "3.2"
+  - "3.3"
+  - "3.4"
+  - "pypy"
+  - "pypy3"
+  - "pypy-5.3.1"
+install:
+  - python setup.py install
+script: cd test && python test_bayonet.py
