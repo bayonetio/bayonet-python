@@ -3,7 +3,7 @@ import sys
 import warnings
 from setuptools import setup
 
-version = "0.0.0"
+version = "0.0.2"
 
 path, script = os.path.split(sys.argv[0])
 os.chdir(os.path.abspath(path))

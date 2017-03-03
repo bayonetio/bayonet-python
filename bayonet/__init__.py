@@ -1,2 +1,2 @@
-from bayonet import BayonetClient
-from exceptions import BayonetError, InvalidClientSetupError
+from .bayonet import BayonetClient
+from .exceptions import BayonetError, InvalidClientSetupError

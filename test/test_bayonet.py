@@ -4,8 +4,7 @@ import os
 import sys
 from types import MethodType
 import unittest
-from bayonet import BayonetClient
-from bayonet.exceptions import (BayonetError, InvalidClientSetupError)
+import bayonet
 
 api_key = os.environ.get('API_KEY')
 if api_key is None:
@@ -95,11 +94,11 @@ feedback_api_trans_code = ""
 
 class TestBayonet(unittest.TestCase):
     def setUp(self):
-        self.client = BayonetClient(api_key, api_version)
+        self.client = bayonet.BayonetClient(api_key, api_version)
 
     def test_bad_client_setup(self):
-        with self.assertRaises(InvalidClientSetupError):
-            BayonetClient(api_key, '2.0')
+        with self.assertRaises(bayonet.InvalidClientSetupError):
+            bayonet.BayonetClient(api_key, '2.0')
 
     def test_default_client_user_agent(self):
         self.assertIsNone(self.client._raw_user_agent)
@@ -122,17 +121,17 @@ class TestBayonet(unittest.TestCase):
 
 class TestConsult(unittest.TestCase):
     def setUp(self):
-        self.client = BayonetClient(api_key, api_version)
-        self.invalid_client = BayonetClient(invalid_api_key, api_version)
+        self.client = bayonet.BayonetClient(api_key, api_version)
+        self.invalid_client = bayonet.BayonetClient(invalid_api_key, api_version)
 
     def test_should_return_error_on_invalid_api_key(self):
-        with self.assertRaises(BayonetError):
+        with self.assertRaises(bayonet.BayonetError):
             self.invalid_client.consulting(params_consulting)
 
     def test_should_validate_api_key(self):
         try:
             self.invalid_client.consulting(params_consulting)
-        except BayonetError as e:
+        except bayonet.BayonetError as e:
             self.assertEqual(e.reason_code, "11")
 
     def test_should_return_success(self):
@@ -148,25 +147,25 @@ class TestConsult(unittest.TestCase):
 
 class TestFeedback(unittest.TestCase):
     def setUp(self):
-        self.client = BayonetClient(api_key, api_version)
-        self.invalid_client = BayonetClient(invalid_api_key, api_version)
+        self.client = bayonet.BayonetClient(api_key, api_version)
+        self.invalid_client = bayonet.BayonetClient(invalid_api_key, api_version)
 
     def test_should_validate_api_key(self):
         try:
             self.invalid_client.feedback(params_feedback)
-        except BayonetError as e:
+        except bayonet.BayonetError as e:
             self.assertEqual(e.reason_code, "11")
 
     def test_should_return_error_on_invalid_api_trans_code(self):
         params_feedback['feedback_api_trans_code'] = 'xxx'
-        with self.assertRaises(BayonetError):
+        with self.assertRaises(bayonet.BayonetError):
             self.client.feedback(params_feedback)
 
     def test_should_validate_api_trans_code(self):
         params_feedback['feedback_api_trans_code'] = 'xxx'
         try:
             self.client.feedback(params_feedback)
-        except BayonetError as e:
+        except bayonet.BayonetError as e:
             self.assertEqual(e.reason_code, "87")
 
     def test_should_return_success(self):
@@ -177,13 +176,13 @@ class TestFeedback(unittest.TestCase):
 
 class TestFeedbackHistorical(unittest.TestCase):
     def setUp(self):
-        self.client = BayonetClient(api_key, api_version)
-        self.invalid_client = BayonetClient(invalid_api_key, api_version)
+        self.client = bayonet.BayonetClient(api_key, api_version)
+        self.invalid_client = bayonet.BayonetClient(invalid_api_key, api_version)
 
     def test_should_validate_api_key(self):
         try:
             self.invalid_client.feedback_historical(params_feedback_historical)
-        except BayonetError as e:
+        except bayonet.BayonetError as e:
             self.assertEqual(e.reason_code, "11")
 
     def test_should_return_success_on_chargeback_feedback(self):
