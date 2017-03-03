@@ -13,6 +13,7 @@ To know more about Bayonet's API and its domain and technical details, please se
 ## Getting started
 To use this SDK, please make sure:
   * You have Python 2.7 or superior installed on your system.
+  * Your system supports TLS v1.2.
   * You have an API KEY (sandbox and/or live) provided by Bayonet's team.
   * Install the 'bayonet' package on your system
   
