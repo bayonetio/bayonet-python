@@ -1,0 +1,14 @@
+*.pyc
+*.swp
+*.egg
+*.class
+*.swo
+.Python
+.idea/
+.ropeproject/*
+bin/
+include/
+pip-selfcheck.json
+/dist/
+/bayonet.egg-info/
+/build/
