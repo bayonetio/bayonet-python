@@ -28,7 +28,7 @@ setup(
     url='https://github.com/Bayonet-Client/bayonet-python',
     packages=['bayonet', 'test'],
     install_requires=['requests'],
-    test_suite='test',
+    test_suite='test.test_bayonet',
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
