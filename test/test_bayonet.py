@@ -89,6 +89,10 @@ params_feedback_historical = {
     }
 }
 
+params_get_fingerprint_data = {
+    "bayonet_fingerprint_token": "xxx"
+}
+
 feedback_api_trans_code = ""
 
 
@@ -192,6 +196,18 @@ class TestFeedbackHistorical(unittest.TestCase):
     def test_should_return_success(self):
         r = self.client.feedback_historical(params_feedback_historical)
         self.assertEqual(r.reason_code, "00")
+
+
+class TestGetFingerprintData(unittest.TestCase):
+    def setUp(self):
+        self.client = bayonet.BayonetClient(api_key, api_version)
+        self.invalid_client = bayonet.BayonetClient(invalid_api_key, api_version)
+
+    def test_should_validate_fingerprint_token(self):
+        try:
+            self.invalid_client.get_fingerprint_data(params_get_fingerprint_data)
+        except bayonet.BayonetError as e:
+            self.assertEqual(e.status, "Error: Invalid value for bayonet_fingerprint_token")
 
 
 if __name__ == "__main__":

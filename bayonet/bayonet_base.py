@@ -25,6 +25,10 @@ class BayonetBase(object):
         serialized = self.json_from_params(params)
         return self.request('/feedback-historical', serialized)
 
+    def get_fingerprint_data(self, params):
+        serialized = self.json_from_params(params)
+        return self.request('/get-fingerprint-data', serialized)
+
     def json_from_params(self, params):
         # Add api_key to params
         params['api_key'] = self.api_key

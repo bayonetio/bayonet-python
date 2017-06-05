@@ -17,11 +17,22 @@ class BayonetError(Exception):
         # Get reason_code and reason_message from response
         try:
             response_as_json = json.loads(http_response_message)
-            self.reason_code = response_as_json['reason_code']
-            self.reason_message = response_as_json['reason_message']
+            if 'reason_code' in response_as_json:
+                self.reason_code = response_as_json['reason_code']
+            else:
+                self.reason_code = None
+            if 'reason_message' in response_as_json:
+                self.reason_message = response_as_json['reason_message']
+            else:
+                self.reason_message = None
+            if 'status' in response_as_json:
+                self.status = response_as_json['status']
+            else:
+                self.status = None
         except ValueError:
             self.reason_code = None
             self.reason_message = None
+            self.status = None
 
 
 class InvalidClientSetupError(Exception):
