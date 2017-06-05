@@ -111,7 +111,14 @@ Once you have Bayonet's SDK configured, you can call the three APIs with the fol
         }
     })
     ```
- 
+  * Get-fingerprint-data API
+  
+    ```py
+    client.get_fingerprint_data({
+        "bayonet_fingerprint_token": "fingerprint-token-generated-by-JS-snipppet"
+    })
+    ```
+
 ## Error handling
 Bayonet's SDK raises exceptions both when setting up the client object and executing functions:
 ```py
@@ -127,6 +134,7 @@ try:
 except bayonet.exceptions.BayonetError as e:
     print (e.reason_code)
     print (e.reason_message)
+    print (e.status)
 ```
 
 For a full list of error codes and their messages, please refer to the Bayonet API documentation.
