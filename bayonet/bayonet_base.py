@@ -5,9 +5,8 @@ from abc import ABCMeta, abstractmethod
 class BayonetBase(object):
     __metaclass__ = ABCMeta
 
-    def __init__(self, api_key, version):
+    def __init__(self, api_key):
         self.api_key = api_key
-        self.version = version
 
     @abstractmethod
     def request(self, route, arg):
