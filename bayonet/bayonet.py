@@ -101,8 +101,10 @@ class _BayonetTransport(object):
                       data=request_json_arg)
 
         if resp.status_code == 200:
+            s.close()
             return BayonetResponse(resp)
         else:
+            s.close()
             raise BayonetError('', request_json_arg, headers, resp.status_code, resp.content)
 
 
