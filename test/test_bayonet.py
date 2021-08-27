@@ -206,5 +206,28 @@ class TestFeedbackHistorical(unittest.TestCase):
         r = self.client.feedback_historical(params_feedback_historical)
         self.assertEqual(r.reason_code, 0)
 
+class TestLists(unittest.TestCase):
+    def setUp(self):
+        self.client = bayonet.BayonetClient(api_key)
+        self.invalid_client = bayonet.BayonetClient(invalid_api_key)
+    
+    def test_should_validate_api_key(self):
+        try:
+            self.invalid_client.blocklist_add(params_blocklist_valid)
+        except bayonet.BayonetError as e:
+            self.assertEqual(e.reason_code, 12)
+
+    def test_should_validate_email_in_system(self):
+        try:
+            self.client.blocklist_add(params_blocklist_valid)
+        except bayonet.BayonetError as e:
+            self.assertEqual(e.reason_code, 152)
+    
+    def test_should_accept_email_when_adding_to_list(self):
+        try:
+            self.client.blocklist_add(params_blocklist_valid)
+        except:
+            self.assertEqual(e.reason_code, 0)
+
 if __name__ == "__main__":
     unittest.main()
