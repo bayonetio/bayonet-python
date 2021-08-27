@@ -12,88 +12,105 @@ if api_key is None:
           file=sys.stderr)
     sys.exit(1)
 
-api_version = os.environ.get('API_VERSION')
-if api_version is None:
-    print('Set API_VERSION environment variable to a valid token.',
-          file=sys.stderr)
-    sys.exit(1)
-
 invalid_api_key = "da2da838-6311-4646-805f-2466954b1a11"
 
 params_consulting = {
-    "channel": "ecommerce",
-    "cardholder_name": "test_python_cardholder_name",
-    "product_name": "test_python_product_name",
-    "consumer_name": "test_python_consumer_name",
-    "transaction_time": "1476813671",
-    "payment_method": "card",
-    "transaction_amount": "500.00",
-    "card_number": "4111111111111111",
-    "currency_code": "MXN",
-    "coupon": "test_python_coupon",
-    "telephone": "9999999999",
-    "expedited_shipping": False,
     "email": "test_python@bayonet.io",
-    "payment_gateway": "stripe",
-    "device_fingerprint": "test_python_d_f",
+    "consumer_name": "test python consumer name",
+    "consumer_internal_id": "test_python_1",
+    "cardholder_name": "test python cardholder name",
+    "telephone": "9999999999",
+    "card_number": "4111111111111111",
+    "transaction_amount": 500.00,
+    "currency_code": "MXN",
     "shipping_address": {
-        "address_line_1": "test_python_line_1",
-        "address_line_2": "test_python_line_2",
+        "line_1": "test_python_line_1",
+        "line_2": "test_python_line_2",
         "city": "Mexico DF",
         "state": "Mexico DF",
         "country": "MEX",
         "zip_code": "111111"
-    }
+    },
+    "billing_address": {
+        "line_1": "test_python_line_1",
+        "line_2": "test_python_line_2",
+        "city": "Mexico DF",
+        "state": "Mexico DF",
+        "country": "MEX",
+        "zip_code": "111111"
+    },
+    "payment_method": "card",
+    "transaction_time": 1476813671,
+    "order_id": "test_python_123",
+    "payment_gateway": "stripe",
+    "channel": "ecommerce",
+    "coupon": "test_python_coupon",
+    "expedited_shipping": False,
+    "products": [
+        {
+            "product_id": "1",
+            "product_name": "product_1",
+            "product_price": 500.00,
+            "product_category": "test"
+        }
+    ]
 }
 
-params_feedback = {
-    "transaction_status": "success",
-    "transaction_id": "test_python",
-    "feedback_api_trans_code": "xxx"
+params_update_transaction = {
+    "transaction_status": "bank_decline",
+    "bayonet_tracking_id": "test_python_123"
 }
-
-params_chargeback_feedback = {
-    "type": "chargeback",
-    "chargeback_time": "1425518410",
-    "chargeback_reason": "fraud",
-    "transaction_id": "test_python"
-}
-
 
 params_feedback_historical = {
-    "channel": "ecommerce",
-    "type": "transaction",
-    "cardholder_name": "test_python_cardholder_name",
-    "product_name": "test_python_product_name",
-    "consumer_name": "test_python_consumer_name",
-    "transaction_time": "1476813671",
-    "transaction_id": "test_python_f_h",
-    "transaction_status": "success",
-    "payment_method": "card",
-    "transaction_amount": "500.00",
-    "card_number": "4111111111111111",
-    "currency_code": "MXN",
-    "coupon": "test_python_coupon",
-    "telephone": "9999999999",
-    "expedited_shipping": False,
     "email": "test_python@bayonet.io",
-    "payment_gateway": "stripe",
-    "device_fingerprint": "test_python_df",
+    "consumer_name": "test python consumer name",
+    "consumer_internal_id": "test_python_1",
+    "cardholder_name": "test python cardholder name",
+    "telephone": "9999999999",
+    "card_number": "4111111111111111",
+    "transaction_amount": 500.00,
+    "currency_code": "MXN",
     "shipping_address": {
-        "address_line_1": "test_python_line_1",
-        "address_line_2": "test_python_line_2",
+        "line_1": "test_python_line_1",
+        "line_2": "test_python_line_2",
         "city": "Mexico DF",
         "state": "Mexico DF",
         "country": "MEX",
         "zip_code": "111111"
-    }
+    },
+    "billing_address": {
+        "line_1": "test_python_line_1",
+        "line_2": "test_python_line_2",
+        "city": "Mexico DF",
+        "state": "Mexico DF",
+        "country": "MEX",
+        "zip_code": "111111"
+    },
+    "payment_method": "card",
+    "transaction_time": 1476813671,
+    "order_id": "test_python_123",
+    "payment_gateway": "stripe",
+    "channel": "ecommerce",
+    "coupon": "test_python_coupon",
+    "expedited_shipping": False,
+    "products": [
+        {
+            "product_id": "1",
+            "product_name": "product_1",
+            "product_price": 500.00,
+            "product_category": "test"
+        }
+    ],
+    "transaction_status": "success"
 }
 
-params_get_fingerprint_data = {
-    "bayonet_fingerprint_token": "xxx"
+params_blocklist_invalid = {
+    "email": "arandommailtotestxxx@xxx.com"
 }
 
-feedback_api_trans_code = ""
+params_blocklist_valid = {
+     "email": "test_python@bayonet.io"
+}
 
 
 class TestBayonet(unittest.TestCase):

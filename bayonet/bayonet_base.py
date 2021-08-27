@@ -42,5 +42,5 @@ class BayonetBase(object):
 
     def json_from_params(self, params):
         # Add api_key to params
-        params['api_key'] = self.api_key
+        params['auth'] = {'api_key': self.api_key}
         return json.dumps(params)
