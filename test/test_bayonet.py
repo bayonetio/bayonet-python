@@ -115,11 +115,7 @@ params_blocklist_valid = {
 
 class TestBayonet(unittest.TestCase):
     def setUp(self):
-        self.client = bayonet.BayonetClient(api_key, api_version)
-
-    def test_bad_client_setup(self):
-        with self.assertRaises(bayonet.InvalidClientSetupError):
-            bayonet.BayonetClient(api_key, '2.0')
+        self.client = bayonet.BayonetClient(api_key)
 
     def test_default_client_user_agent(self):
         self.assertIsNone(self.client._raw_user_agent)
@@ -130,11 +126,11 @@ class TestBayonet(unittest.TestCase):
         self.assertEqual(self.client._api_hostname, 'api.bayonet.io')
 
     def test_client_api_version_namespace(self):
-        self.assertEqual(self.client._api_version_namespace, 'v1')
+        self.assertEqual(self.client._api_version_namespace, 'v2')
 
     def test_fully_qualified_api_host_name(self):
         self.assertEqual(self.client.fully_qualified_api_hostname(),
-                         'https://api.bayonet.io/v1')
+                         'https://api.bayonet.io/v2')
 
     def test_client_must_respond_to__request(self):
         assert type(self.client.request) is MethodType
@@ -142,8 +138,8 @@ class TestBayonet(unittest.TestCase):
 
 class TestConsult(unittest.TestCase):
     def setUp(self):
-        self.client = bayonet.BayonetClient(api_key, api_version)
-        self.invalid_client = bayonet.BayonetClient(invalid_api_key, api_version)
+        self.client = bayonet.BayonetClient(api_key)
+        self.invalid_client = bayonet.BayonetClient(invalid_api_key)
 
     def test_should_return_error_on_invalid_api_key(self):
         with self.assertRaises(bayonet.BayonetError):
@@ -153,79 +149,62 @@ class TestConsult(unittest.TestCase):
         try:
             self.invalid_client.consulting(params_consulting)
         except bayonet.BayonetError as e:
-            self.assertEqual(e.reason_code, "11")
+            self.assertEqual(e.reason_code, 12)
 
     def test_should_return_success(self):
         r = self.client.consulting(params_consulting)
-        global feedback_api_trans_code
-        feedback_api_trans_code = r.feedback_api_trans_code
-        self.assertEqual(r.reason_code, "00")
+        global bayonet_tracking_id
+        bayonet_tracking_id = r.bayonet_tracking_id
+        self.assertEqual(r.reason_code, 0)
 
-    def test_should_return_feedback_api_trans_code(self):
+    def test_should_return_bayonet_tracking_id(self):
         r = self.client.consulting(params_consulting)
-        assert r.feedback_api_trans_code is not None
+        assert r.bayonet_tracking_id is not None
 
 
-class TestFeedback(unittest.TestCase):
+class TestUpdateTransaction(unittest.TestCase):
     def setUp(self):
-        self.client = bayonet.BayonetClient(api_key, api_version)
-        self.invalid_client = bayonet.BayonetClient(invalid_api_key, api_version)
+        self.client = bayonet.BayonetClient(api_key)
+        self.invalid_client = bayonet.BayonetClient(invalid_api_key)
 
     def test_should_validate_api_key(self):
         try:
-            self.invalid_client.feedback(params_feedback)
+            self.invalid_client.update_transaction(params_update_transaction)
         except bayonet.BayonetError as e:
-            self.assertEqual(e.reason_code, "11")
+            self.assertEqual(e.reason_code, 12)
 
-    def test_should_return_error_on_invalid_api_trans_code(self):
-        params_feedback['feedback_api_trans_code'] = 'xxx'
+    def test_should_return_error_on_invalid_bayonet_tracking_code(self):
+        params_update_transaction['bayonet_tracking_id'] = 'xxx'
         with self.assertRaises(bayonet.BayonetError):
-            self.client.feedback(params_feedback)
+            self.client.update_transaction(params_update_transaction)
 
-    def test_should_validate_api_trans_code(self):
-        params_feedback['feedback_api_trans_code'] = 'xxx'
+    def test_should_validate_bayonet_tracking_id(self):
+        params_update_transaction['bayonet_tracking_id'] = 'xxx'
         try:
-            self.client.feedback(params_feedback)
+            self.client.update_transaction(params_update_transaction)
         except bayonet.BayonetError as e:
-            self.assertEqual(e.reason_code, "87")
+            self.assertEqual(e.reason_code, 162)
 
     def test_should_return_success(self):
-        params_feedback['feedback_api_trans_code'] = feedback_api_trans_code
-        r = self.client.feedback(params_feedback)
-        self.assertEqual(r.reason_code, "00")
+        params_update_transaction['bayonet_tracking_id'] = bayonet_tracking_id
+        r = self.client.update_transaction(params_update_transaction)
+        self.assertEqual(r.reason_code, 0)
 
 
 class TestFeedbackHistorical(unittest.TestCase):
     def setUp(self):
-        self.client = bayonet.BayonetClient(api_key, api_version)
-        self.invalid_client = bayonet.BayonetClient(invalid_api_key, api_version)
+        self.client = bayonet.BayonetClient(api_key)
+        self.invalid_client = bayonet.BayonetClient(invalid_api_key)
 
     def test_should_validate_api_key(self):
         try:
             self.invalid_client.feedback_historical(params_feedback_historical)
         except bayonet.BayonetError as e:
-            self.assertEqual(e.reason_code, "11")
-
-    def test_should_return_success_on_chargeback_feedback(self):
-        r = self.client.feedback_historical(params_chargeback_feedback)
-        self.assertEqual(r.reason_code, "00")
+            self.assertEqual(e.reason_code, 12)
 
     def test_should_return_success(self):
         r = self.client.feedback_historical(params_feedback_historical)
-        self.assertEqual(r.reason_code, "00")
-
-
-class TestGetFingerprintData(unittest.TestCase):
-    def setUp(self):
-        self.client = bayonet.BayonetClient(api_key, api_version)
-        self.invalid_client = bayonet.BayonetClient(invalid_api_key, api_version)
-
-    def test_should_validate_fingerprint_token(self):
-        try:
-            self.invalid_client.get_fingerprint_data(params_get_fingerprint_data)
-        except bayonet.BayonetError as e:
-            self.assertEqual(e.status, "Error: Invalid value for bayonet_fingerprint_token")
-
+        self.assertEqual(r.reason_code, 0)
 
 if __name__ == "__main__":
     unittest.main()
