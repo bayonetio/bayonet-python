@@ -4,8 +4,8 @@ import json
 class BayonetResponse(object):
     def __init__(self, response):
         parsed_response = json.loads(response.content)
-        if 'feedback_api_trans_code' in parsed_response:
-            self.feedback_api_trans_code = parsed_response['feedback_api_trans_code']
+        if 'bayonet_tracking_id' in parsed_response:
+            self.bayonet_tracking_id = parsed_response['bayonet_tracking_id']
         else:
             self.feedback_api_trans_code = None
         if 'rules_triggered' in parsed_response:
