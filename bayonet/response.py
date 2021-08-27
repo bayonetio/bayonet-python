@@ -32,8 +32,4 @@ class BayonetResponse(object):
             self.request_body = parsed_response['request_body']
         else:
             self.request_body = None
-        if 'bayonet_fingerprint' in parsed_response:
-            self.bayonet_fingerprint = parsed_response['bayonet_fingerprint']
-        else:
-            self.bayonet_fingerprint = None
         self.raw = parsed_response
