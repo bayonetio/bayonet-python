@@ -3,7 +3,7 @@ import sys
 import warnings
 from setuptools import setup
 
-version = "1.1.0"
+version = "2.0.0"
 
 path, script = os.path.split(sys.argv[0])
 os.chdir(os.path.abspath(path))
@@ -41,6 +41,8 @@ setup(
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: Implementation :: PyPy",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ])
