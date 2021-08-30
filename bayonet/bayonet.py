@@ -13,11 +13,9 @@ class _BayonetTransport(object):
     Responsible for implementing the wire protocol for making requests to the
     Bayonet API.
     """
-    _SUPPORTED_API_VERSIONS = ['1']
 
     _DEFAULT_DOMAIN = '.bayonet.io'
     _HOST_API = 'api'
-    _HOST_FINGERPRINTING = 'fingerprinting'
 
     # RPC style means that the argument and result of a route are contained in
     # the HTTP body.
@@ -25,7 +23,6 @@ class _BayonetTransport(object):
 
     def __init__(self,
                  api_key,
-                 api_version,
                  user_agent=None,
                  headers=None):
         """
@@ -40,15 +37,6 @@ class _BayonetTransport(object):
             'Expected dict, got %r' % headers
 
         self.api_key = api_key
-
-        if not api_version:
-            raise InvalidClientSetupError("Please specify Api version")
-        elif api_version not in BayonetClient._SUPPORTED_API_VERSIONS:
-            raise InvalidClientSetupError(
-                "This library does not support version specified. Consider updating your dependencies")
-        else:
-            self.api_version = api_version
-
         self._headers = headers
 
         base_user_agent = 'OfficialBayonetPythonSDK'
@@ -64,20 +52,11 @@ class _BayonetTransport(object):
                                       BayonetClient._DEFAULT_DOMAIN)
         self._api_hostname = os.environ.get('BAYONET_API_HOST',
                                             'api' + self._domain)
-        self._fingerprinting_api_hostname = os.environ.get('BAYONET_FINGERPRINTING_API_HOST',
-                                                           'fingerprinting' + self._domain)
-
-        self._api_version_namespace = "v" + api_version
+        self._api_version_namespace = "v2"
 
     def fully_qualified_api_hostname(self):
         return 'https://{api_host_name}/{api_version_namespace}'.format(
                 api_host_name=self._api_hostname,
-                api_version_namespace=self._api_version_namespace
-        )
-
-    def fully_qualified_fingerprinting_api_hostname(self):
-        return 'https://{fingerprinting_api_hostname}/{api_version_namespace}'.format(
-                fingerprinting_api_hostname=self._fingerprinting_api_hostname,
                 api_version_namespace=self._api_version_namespace
         )
 
@@ -108,11 +87,8 @@ class _BayonetTransport(object):
         """
         # Fully qualified hostname
         fq_hostname = self.fully_qualified_api_hostname()
-        if route == "/get-fingerprint-data":
-            fq_hostname = self.fully_qualified_fingerprinting_api_hostname()
 
         url = "{}{}".format(fq_hostname, route)
-
         headers = {'User-Agent': self._user_agent,
                    'Content-Type': 'application/json'}
         if self._headers:
@@ -125,8 +101,10 @@ class _BayonetTransport(object):
                       data=request_json_arg)
 
         if resp.status_code == 200:
+            s.close()
             return BayonetResponse(resp)
         else:
+            s.close()
             raise BayonetError('', request_json_arg, headers, resp.status_code, resp.content)
 
 

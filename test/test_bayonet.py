@@ -12,97 +12,110 @@ if api_key is None:
           file=sys.stderr)
     sys.exit(1)
 
-api_version = os.environ.get('API_VERSION')
-if api_version is None:
-    print('Set API_VERSION environment variable to a valid token.',
-          file=sys.stderr)
-    sys.exit(1)
-
 invalid_api_key = "da2da838-6311-4646-805f-2466954b1a11"
 
 params_consulting = {
-    "channel": "ecommerce",
-    "cardholder_name": "test_python_cardholder_name",
-    "product_name": "test_python_product_name",
-    "consumer_name": "test_python_consumer_name",
-    "transaction_time": "1476813671",
-    "payment_method": "card",
-    "transaction_amount": "500.00",
-    "card_number": "4111111111111111",
-    "currency_code": "MXN",
-    "coupon": "test_python_coupon",
-    "telephone": "9999999999",
-    "expedited_shipping": False,
     "email": "test_python@bayonet.io",
-    "payment_gateway": "stripe",
-    "device_fingerprint": "test_python_d_f",
+    "consumer_name": "test python consumer name",
+    "consumer_internal_id": "test_python_1",
+    "cardholder_name": "test python cardholder name",
+    "telephone": "9999999999",
+    "card_number": "4111111111111111",
+    "transaction_amount": 500.00,
+    "currency_code": "MXN",
     "shipping_address": {
-        "address_line_1": "test_python_line_1",
-        "address_line_2": "test_python_line_2",
+        "line_1": "test_python_line_1",
+        "line_2": "test_python_line_2",
         "city": "Mexico DF",
         "state": "Mexico DF",
         "country": "MEX",
         "zip_code": "111111"
-    }
+    },
+    "billing_address": {
+        "line_1": "test_python_line_1",
+        "line_2": "test_python_line_2",
+        "city": "Mexico DF",
+        "state": "Mexico DF",
+        "country": "MEX",
+        "zip_code": "111111"
+    },
+    "payment_method": "card",
+    "transaction_time": 1476813671,
+    "order_id": "test_python_123",
+    "payment_gateway": "stripe",
+    "channel": "ecommerce",
+    "coupon": "test_python_coupon",
+    "expedited_shipping": False,
+    "products": [
+        {
+            "product_id": "1",
+            "product_name": "product_1",
+            "product_price": 500.00,
+            "product_category": "test"
+        }
+    ]
 }
 
-params_feedback = {
-    "transaction_status": "success",
-    "transaction_id": "test_python",
-    "feedback_api_trans_code": "xxx"
+params_update_transaction = {
+    "transaction_status": "bank_decline",
+    "bayonet_tracking_id": "test_python_123"
 }
-
-params_chargeback_feedback = {
-    "type": "chargeback",
-    "chargeback_time": "1425518410",
-    "chargeback_reason": "fraud",
-    "transaction_id": "test_python"
-}
-
 
 params_feedback_historical = {
-    "channel": "ecommerce",
-    "type": "transaction",
-    "cardholder_name": "test_python_cardholder_name",
-    "product_name": "test_python_product_name",
-    "consumer_name": "test_python_consumer_name",
-    "transaction_time": "1476813671",
-    "transaction_id": "test_python_f_h",
-    "transaction_status": "success",
-    "payment_method": "card",
-    "transaction_amount": "500.00",
-    "card_number": "4111111111111111",
-    "currency_code": "MXN",
-    "coupon": "test_python_coupon",
-    "telephone": "9999999999",
-    "expedited_shipping": False,
     "email": "test_python@bayonet.io",
-    "payment_gateway": "stripe",
-    "device_fingerprint": "test_python_df",
+    "consumer_name": "test python consumer name",
+    "consumer_internal_id": "test_python_1",
+    "cardholder_name": "test python cardholder name",
+    "telephone": "9999999999",
+    "card_number": "4111111111111111",
+    "transaction_amount": 500.00,
+    "currency_code": "MXN",
     "shipping_address": {
-        "address_line_1": "test_python_line_1",
-        "address_line_2": "test_python_line_2",
+        "line_1": "test_python_line_1",
+        "line_2": "test_python_line_2",
         "city": "Mexico DF",
         "state": "Mexico DF",
         "country": "MEX",
         "zip_code": "111111"
-    }
+    },
+    "billing_address": {
+        "line_1": "test_python_line_1",
+        "line_2": "test_python_line_2",
+        "city": "Mexico DF",
+        "state": "Mexico DF",
+        "country": "MEX",
+        "zip_code": "111111"
+    },
+    "payment_method": "card",
+    "transaction_time": 1476813671,
+    "order_id": "test_python_123",
+    "payment_gateway": "stripe",
+    "channel": "ecommerce",
+    "coupon": "test_python_coupon",
+    "expedited_shipping": False,
+    "products": [
+        {
+            "product_id": "1",
+            "product_name": "product_1",
+            "product_price": 500.00,
+            "product_category": "test"
+        }
+    ],
+    "transaction_status": "success"
 }
 
-params_get_fingerprint_data = {
-    "bayonet_fingerprint_token": "xxx"
+params_blocklist_invalid = {
+    "email": "arandommailtotestxxx@xxx.com"
 }
 
-feedback_api_trans_code = ""
+params_blocklist_valid = {
+     "email": "test_python@bayonet.io"
+}
 
 
 class TestBayonet(unittest.TestCase):
     def setUp(self):
-        self.client = bayonet.BayonetClient(api_key, api_version)
-
-    def test_bad_client_setup(self):
-        with self.assertRaises(bayonet.InvalidClientSetupError):
-            bayonet.BayonetClient(api_key, '2.0')
+        self.client = bayonet.BayonetClient(api_key)
 
     def test_default_client_user_agent(self):
         self.assertIsNone(self.client._raw_user_agent)
@@ -113,11 +126,11 @@ class TestBayonet(unittest.TestCase):
         self.assertEqual(self.client._api_hostname, 'api.bayonet.io')
 
     def test_client_api_version_namespace(self):
-        self.assertEqual(self.client._api_version_namespace, 'v1')
+        self.assertEqual(self.client._api_version_namespace, 'v2')
 
     def test_fully_qualified_api_host_name(self):
         self.assertEqual(self.client.fully_qualified_api_hostname(),
-                         'https://api.bayonet.io/v1')
+                         'https://api.bayonet.io/v2')
 
     def test_client_must_respond_to__request(self):
         assert type(self.client.request) is MethodType
@@ -125,8 +138,8 @@ class TestBayonet(unittest.TestCase):
 
 class TestConsult(unittest.TestCase):
     def setUp(self):
-        self.client = bayonet.BayonetClient(api_key, api_version)
-        self.invalid_client = bayonet.BayonetClient(invalid_api_key, api_version)
+        self.client = bayonet.BayonetClient(api_key)
+        self.invalid_client = bayonet.BayonetClient(invalid_api_key)
 
     def test_should_return_error_on_invalid_api_key(self):
         with self.assertRaises(bayonet.BayonetError):
@@ -136,79 +149,85 @@ class TestConsult(unittest.TestCase):
         try:
             self.invalid_client.consulting(params_consulting)
         except bayonet.BayonetError as e:
-            self.assertEqual(e.reason_code, "11")
+            self.assertEqual(e.reason_code, 12)
 
     def test_should_return_success(self):
         r = self.client.consulting(params_consulting)
-        global feedback_api_trans_code
-        feedback_api_trans_code = r.feedback_api_trans_code
-        self.assertEqual(r.reason_code, "00")
+        global bayonet_tracking_id
+        bayonet_tracking_id = r.bayonet_tracking_id
+        self.assertEqual(r.reason_code, 0)
 
-    def test_should_return_feedback_api_trans_code(self):
+    def test_should_return_bayonet_tracking_id(self):
         r = self.client.consulting(params_consulting)
-        assert r.feedback_api_trans_code is not None
+        assert r.bayonet_tracking_id is not None
 
 
-class TestFeedback(unittest.TestCase):
+class TestUpdateTransaction(unittest.TestCase):
     def setUp(self):
-        self.client = bayonet.BayonetClient(api_key, api_version)
-        self.invalid_client = bayonet.BayonetClient(invalid_api_key, api_version)
+        self.client = bayonet.BayonetClient(api_key)
+        self.invalid_client = bayonet.BayonetClient(invalid_api_key)
 
     def test_should_validate_api_key(self):
         try:
-            self.invalid_client.feedback(params_feedback)
+            self.invalid_client.update_transaction(params_update_transaction)
         except bayonet.BayonetError as e:
-            self.assertEqual(e.reason_code, "11")
+            self.assertEqual(e.reason_code, 12)
 
-    def test_should_return_error_on_invalid_api_trans_code(self):
-        params_feedback['feedback_api_trans_code'] = 'xxx'
+    def test_should_return_error_on_invalid_bayonet_tracking_code(self):
+        params_update_transaction['bayonet_tracking_id'] = 'xxx'
         with self.assertRaises(bayonet.BayonetError):
-            self.client.feedback(params_feedback)
+            self.client.update_transaction(params_update_transaction)
 
-    def test_should_validate_api_trans_code(self):
-        params_feedback['feedback_api_trans_code'] = 'xxx'
+    def test_should_validate_bayonet_tracking_id(self):
+        params_update_transaction['bayonet_tracking_id'] = 'xxx'
         try:
-            self.client.feedback(params_feedback)
+            self.client.update_transaction(params_update_transaction)
         except bayonet.BayonetError as e:
-            self.assertEqual(e.reason_code, "87")
+            self.assertEqual(e.reason_code, 162)
 
     def test_should_return_success(self):
-        params_feedback['feedback_api_trans_code'] = feedback_api_trans_code
-        r = self.client.feedback(params_feedback)
-        self.assertEqual(r.reason_code, "00")
+        params_update_transaction['bayonet_tracking_id'] = bayonet_tracking_id
+        r = self.client.update_transaction(params_update_transaction)
+        self.assertEqual(r.reason_code, 0)
 
 
 class TestFeedbackHistorical(unittest.TestCase):
     def setUp(self):
-        self.client = bayonet.BayonetClient(api_key, api_version)
-        self.invalid_client = bayonet.BayonetClient(invalid_api_key, api_version)
+        self.client = bayonet.BayonetClient(api_key)
+        self.invalid_client = bayonet.BayonetClient(invalid_api_key)
 
     def test_should_validate_api_key(self):
         try:
             self.invalid_client.feedback_historical(params_feedback_historical)
         except bayonet.BayonetError as e:
-            self.assertEqual(e.reason_code, "11")
-
-    def test_should_return_success_on_chargeback_feedback(self):
-        r = self.client.feedback_historical(params_chargeback_feedback)
-        self.assertEqual(r.reason_code, "00")
+            self.assertEqual(e.reason_code, 12)
 
     def test_should_return_success(self):
         r = self.client.feedback_historical(params_feedback_historical)
-        self.assertEqual(r.reason_code, "00")
+        self.assertEqual(r.reason_code, 0)
 
-
-class TestGetFingerprintData(unittest.TestCase):
+class TestLists(unittest.TestCase):
     def setUp(self):
-        self.client = bayonet.BayonetClient(api_key, api_version)
-        self.invalid_client = bayonet.BayonetClient(invalid_api_key, api_version)
-
-    def test_should_validate_fingerprint_token(self):
+        self.client = bayonet.BayonetClient(api_key)
+        self.invalid_client = bayonet.BayonetClient(invalid_api_key)
+    
+    def test_should_validate_api_key(self):
         try:
-            self.invalid_client.get_fingerprint_data(params_get_fingerprint_data)
+            self.invalid_client.blocklist_add(params_blocklist_valid)
         except bayonet.BayonetError as e:
-            self.assertEqual(e.status, "Error: Invalid value for bayonet_fingerprint_token")
+            self.assertEqual(e.reason_code, 12)
 
+    def test_should_validate_email_in_system(self):
+        try:
+            self.client.blocklist_add(params_blocklist_valid)
+        except bayonet.BayonetError as e:
+            self.assertEqual(e.reason_code, 152)
+    
+    def test_should_accept_email_when_adding_to_list(self):
+        try:
+            self.client.blocklist_add(params_blocklist_valid)
+        except:
+            self.assertEqual(e.reason_code, 0)
 
 if __name__ == "__main__":
     unittest.main()
